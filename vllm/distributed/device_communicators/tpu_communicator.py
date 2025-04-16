@@ -34,6 +34,17 @@ class TpuCommunicator(DeviceCommunicatorBase):
         # be simply calculated as follows.
         global_rank = self.global_rank
         global_world_size = self.global_world_size
+
+        if ray.is_initialized():
+            logger.info("Ray is already initialized. Skipping Ray initialization.")
+        elif current_platform.is_rocm() or current_platform.is_xpu():
+            # Try to connect existing ray instance and create a new one if not found
+            try:
+                ray.init("auto")
+            except ConnectionError:
+                logger.warning(
+                    "No existing RAY instance detected. "
+                    "A new instance will be launched with current node resources.")
         
         # Always use Ray approach, removing the MP branch entirely
         logger.info("TpuCommunicator initialized with RAY")
