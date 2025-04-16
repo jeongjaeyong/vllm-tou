@@ -60,12 +60,10 @@ class TpuCommunicator(DeviceCommunicatorBase):
         pjrt.initialize_multiprocess(local_rank, local_world_size)
         xr._init_world_size_ordinal()
         
-        # Create optimized replica groups for efficient communication
-        self.groups = create_optimized_replica_groups()
 
     def all_reduce(self, input_: torch.Tensor) -> torch.Tensor:
         # Keep the groups specification from latest code for optimized communication
-        return xm.all_reduce(xm.REDUCE_SUM, input_, groups=self.groups)
+        return xm.all_reduce(xm.REDUCE_SUM, input_)
 
     def all_gather(self, input_: torch.Tensor, dim: int = -1) -> torch.Tensor:
         assert dim == -1, "TPUs only support dim=-1 for all-gather."
