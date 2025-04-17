@@ -7,7 +7,7 @@ from vllm.config import get_current_vllm_config
 from vllm.logger import init_logger
 from vllm.platforms import current_platform
 from .base_device_communicator import DeviceCommunicatorBase
-
+import ray
 # Check if we're using Ray for distributed execution
 USE_RAY = get_current_vllm_config().parallel_config.distributed_executor_backend == "ray"
 logger = init_logger(__name__)
